@@ -1,7 +1,7 @@
 # PRD-001: A263-PDP — Gestión de inscripción de postulantes
 
 ## Contexto y Problema
-Actualmente el flujo de inscripciones de postulantes es sincrono, centraliza muchas responsabilidades e integraciones con servicios institucionales.  
+Actualmente el flujo de registro de inscripciones de postulantes en la plataforma A263-PDP es sincrono, centraliza muchas responsabilidades e integraciones con servicios institucionales.  
 
 Usuarios:
 - CRM Dynamics(azure): Registra la solicitud de inscripción del postulante y comunica la inscripción a A263-PDP.
