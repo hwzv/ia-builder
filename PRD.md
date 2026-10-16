@@ -3,7 +3,7 @@
 ## Contexto y Problema
 Actualmente el flujo de inscripciones de postulantes es sincrono, centraliza muchas responsabilidades e integraciones con servicios institucionales.  
 
-Actores:
+Usuarios:
 - CRM: Envia eventos de inscripciones.
 - PDP: Recepciona, registra la inscripcion y ejecuta integraciones con sistemas institucionales.
 - Servicios institucionales:
