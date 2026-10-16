@@ -4,8 +4,8 @@
 Actualmente el flujo de inscripciones de postulantes es sincrono, centraliza muchas responsabilidades e integraciones con servicios institucionales.  
 
 Usuarios:
-- CRM: Envia eventos de inscripciones.
-- PDP: Recepciona, registra la inscripcion y ejecuta integraciones con sistemas institucionales.
+- CRM Dynamics(azure): Registra la solicitud de inscripción del postulante y comunica la inscripción a A263-PDP.
+- A263-PDP(aws): Recepciona, registra la inscripcion y ejecuta integraciones con sistemas institucionales.
 - Servicios institucionales:
 Active Directory, keycloak, Servicio de correo 
 
