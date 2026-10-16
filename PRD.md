@@ -46,43 +46,43 @@ Personas:
 ## Criterios de Aceptación
 Recepción y validación
 
-AC-01 (RF-01): Dado un evento válido de cada tipo (InscripcionCreada, InscripcionModificada, InscripcionCancelada), cuando CRM lo envía, entonces A263-PDP confirma su recepción y lo registra con su eventId.
-AC-02 (RF-02): Dado un evento InscripcionCreada sin info_academica.carrera, cuando A263-PDP lo recibe, entonces lo rechaza indicando a CRM el campo faltante y no crea ni modifica ninguna inscripción.
-AC-03 (RF-02): Dado un evento con eventVersion 2 y solo la versión 1 soportada, cuando A263-PDP lo recibe, entonces lo rechaza indicando a CRM "versión no soportada" y no crea ni modifica ninguna inscripción.
+- AC-01 (RF-01): Dado un evento válido de cada tipo (InscripcionCreada, InscripcionModificada, InscripcionCancelada), cuando CRM lo envía, entonces A263-PDP confirma su recepción y lo registra con su eventId.
+- AC-02 (RF-02): Dado un evento InscripcionCreada sin info_academica.carrera, cuando A263-PDP lo recibe, entonces lo rechaza indicando a CRM el campo faltante y no crea ni modifica ninguna inscripción.
+- AC-03 (RF-02): Dado un evento con eventVersion 2 y solo la versión 1 soportada, cuando A263-PDP lo recibe, entonces lo rechaza indicando a CRM "versión no soportada" y no crea ni modifica ninguna inscripción.
 
 Sincronización
 
-AC-04 (RF-03): Dado un evento InscripcionCreada válido con un aggregateId nuevo, cuando se procesa, entonces existe exactamente una inscripción con ese aggregateId, su num_doc, carrera, periodo_lectivo, sequence 1 y estado "activa".
-AC-05 (RF-04): Dada la inscripción "6304b037-…" ya sincronizada, cuando llega otro InscripcionCreada con el mismo aggregateId y distinto eventId, entonces no se crea un segundo registro, sus datos no cambian y se confirma la recepción a CRM.
-AC-06 (RF-05): Dada una inscripción con sequence 1 en carrera PSICO, cuando llega un InscripcionModificada con sequence 2, carrera ARQUI y otro email, entonces todos los datos de la inscripción son iguales a los del evento con sequence 2.
-AC-07 (RF-06): Dada una inscripción activa con sequence 2, cuando llega un InscripcionCancelada con sequence 3, entonces la inscripción queda en estado "cancelada" con sequence 3.
-AC-08 (RF-07): Dado un cambio de inscripción sincronizado (creación, modificación o cancelación), cuando se confirma, entonces se publica exactamente un evento de dominio con su aggregateId, tipo de operación y correlationId.
+- AC-04 (RF-03): Dado un evento InscripcionCreada válido con un aggregateId nuevo, cuando se procesa, entonces existe exactamente una inscripción con ese aggregateId, su num_doc, carrera, periodo_lectivo, sequence 1 y estado "activa".
+- AC-05 (RF-04): Dada la inscripción "6304b037-…" ya sincronizada, cuando llega otro InscripcionCreada con el mismo aggregateId y distinto eventId, entonces no se crea un segundo registro, sus datos no cambian y se confirma la recepción a CRM.
+- AC-06 (RF-05): Dada una inscripción con sequence 1 en carrera PSICO, cuando llega un InscripcionModificada con sequence 2, carrera ARQUI y otro email, entonces todos los datos de la inscripción son iguales a los del evento con sequence 2.
+- AC-07 (RF-06): Dada una inscripción activa con sequence 2, cuando llega un InscripcionCancelada con sequence 3, entonces la inscripción queda en estado "cancelada" con sequence 3.
+- AC-08 (RF-07): Dado un cambio de inscripción sincronizado (creación, modificación o cancelación), cuando se confirma, entonces se publica exactamente un evento de dominio con su aggregateId, tipo de operación y correlationId.
 
 Integraciones
 
-AC-09 (RF-08): Dado el num_doc "61887110" sin cuenta en AD, cuando se sincroniza su primera inscripción, entonces existe exactamente una cuenta en AD para ese num_doc.
-AC-10 (RF-08, RF-10): Dado el num_doc "61887110" con cuenta en AD por una inscripción anterior, cuando se sincroniza una nueva inscripción con otro aggregateId, entonces no se crea una segunda cuenta y la nueva inscripción queda asociada a la identidad existente.
-AC-11 (RF-09): Dada una cuenta en AD disponible para el num_doc, cuando se valida el login en Keycloak, entonces la integración con Keycloak queda "completa"; si la validación falla, queda "fallida" y se aplica el reintento (RF-14).
-AC-12 (RF-11): Dada la cuenta en AD disponible y el login validado en Keycloak, cuando se completan ambas integraciones, entonces se envía exactamente un correo de inscripción al email del postulante.
-AC-13 (RF-11): Dada la cuenta en AD creada y la validación de login en Keycloak fallida, cuando se procesa la inscripción, entonces no se envía el correo de inscripción.
+- AC-09 (RF-08): Dado el num_doc "61887110" sin cuenta en AD, cuando se sincroniza su primera inscripción, entonces existe exactamente una cuenta en AD para ese num_doc.
+- AC-10 (RF-08, RF-10): Dado el num_doc "61887110" con cuenta en AD por una inscripción anterior, cuando se sincroniza una nueva inscripción con otro aggregateId, entonces no se crea una segunda cuenta y la nueva inscripción queda asociada a la identidad existente.
+- AC-11 (RF-09): Dada una cuenta en AD disponible para el num_doc, cuando se valida el login en Keycloak, entonces la integración con Keycloak queda "completa"; si la validación falla, queda "fallida" y se aplica el reintento (RF-14).
+- AC-12 (RF-11): Dada la cuenta en AD disponible y el login validado en Keycloak, cuando se completan ambas integraciones, entonces se envía exactamente un correo de inscripción al email del postulante.
+- AC-13 (RF-11): Dada la cuenta en AD creada y la validación de login en Keycloak fallida, cuando se procesa la inscripción, entonces no se envía el correo de inscripción.
 
 Idempotencia y orden
 
-AC-14 (RF-12): Dado el evento "evt-test-001" ya procesado, cuando CRM lo reenvía con el mismo eventId, entonces no se aplica de nuevo, no se ejecuta ninguna integración ni se reenvía el correo, y se confirma la recepción a CRM.
-AC-15 (RF-13): Dada una inscripción con sequence 3 aplicado, cuando llega un evento del mismo aggregateId con sequence 2, entonces se ignora y la inscripción conserva los datos del sequence 3.
-AC-16 (RF-13): Dada una inscripción con sequence 3 aplicado, cuando llega otro evento del mismo aggregateId con sequence 3 y distinto eventId, entonces se ignora.
+- AC-14 (RF-12): Dado el evento "evt-test-001" ya procesado, cuando CRM lo reenvía con el mismo eventId, entonces no se aplica de nuevo, no se ejecuta ninguna integración ni se reenvía el correo, y se confirma la recepción a CRM.
+- AC-15 (RF-13): Dada una inscripción con sequence 3 aplicado, cuando llega un evento del mismo aggregateId con sequence 2, entonces se ignora y la inscripción conserva los datos del sequence 3.
+- AC-16 (RF-13): Dada una inscripción con sequence 3 aplicado, cuando llega otro evento del mismo aggregateId con sequence 3 y distinto eventId, entonces se ignora.
 
 Resiliencia y operación
 
-AC-17 (RF-14, RNF-03): Dado Active Directory no disponible, cuando se procesa una inscripción, entonces la creación de cuenta se reintenta exactamente 3 veces.
-AC-18 (RF-15): Dado que los 3 reintentos de una integración fallan, cuando se agota el último, entonces la inscripción queda "incompleta", conserva sus datos sincronizados y no se repiten las integraciones que ya estaban completas.
-AC-19 (RF-16): Dada una inscripción "incompleta" y el servicio ya disponible, cuando admisión/operaciones la reprocesa, entonces se ejecutan solo las integraciones pendientes, la inscripción pasa a "completa" y el correo se envía una sola vez.
+- AC-17 (RF-14, RNF-03): Dado Active Directory no disponible, cuando se procesa una inscripción, entonces la creación de cuenta se reintenta exactamente 3 veces.
+- AC-18 (RF-15): Dado que los 3 reintentos de una integración fallan, cuando se agota el último, entonces la inscripción queda "incompleta", conserva sus datos sincronizados y no se repiten las integraciones que ya estaban completas.
+- AC-19 (RF-16): Dada una inscripción "incompleta" y el servicio ya disponible, cuando admisión/operaciones la reprocesa, entonces se ejecutan solo las integraciones pendientes, la inscripción pasa a "completa" y el correo se envía una sola vez.
 
 No funcionales
 
-AC-20 (RNF-01): Dado un lote de 1 000 eventos válidos enviados a [PENDIENTE: tasa pico] eventos/min, cuando se mide el tiempo de confirmación a CRM, entonces el p95 es < 2 s.
-AC-21 (RNF-02): Dadas 1 000 inscripciones nuevas con los servicios institucionales disponibles, cuando se procesan, entonces al menos 990 postulantes reciben su correo de inscripción en ≤ 2 min desde el evento de creación.
-AC-22 (RNF-04): Dada una inscripción procesada, cuando se busca por su correlationId, entonces se obtienen la recepción, la sincronización, el evento de dominio y cada integración, todos con su eventId y aggregateId.
+- AC-20 (RNF-01): Dado un lote de 1 000 eventos válidos enviados, cuando se mide el tiempo de confirmación a CRM, entonces el p95 es < 2 s.
+- AC-21 (RNF-02): Dadas 1 000 inscripciones nuevas con los servicios institucionales disponibles, cuando se procesan, entonces al menos 990 postulantes reciben su correo de inscripción en ≤ 2 min desde el evento de creación.
+- AC-22 (RNF-04): Dada una inscripción procesada, cuando se busca por su correlationId, entonces se obtienen la recepción, la sincronización, el evento de dominio y cada integración, todos con su eventId y aggregateId.
 
 ## Fuera de Alcance 
 - Gestión del examen de admisión, sus resultados y el ingreso a la carrera.
